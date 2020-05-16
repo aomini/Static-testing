@@ -2,7 +2,13 @@
 It will cover the static testing tools like `eslint`, `prettier`, `typescript`, `husky` & `lint`. With the use
 of these tools one can have a great development environment with automated tests.
 
-## Eslint
+- [Eslint](#eslint)
+- [Prettier](#prettier)
+- [Typescript](#typescript)
+- [Husky](#husky)
+- [Lint](#lint)
+
+## Eslint <a name="eslint" />
 ESlint is a tool for identifying the errors in the javascript according to the patterns found in Ecmascript.
 
 - Install eslint (with npm or yarn)
@@ -151,7 +157,7 @@ ESlint is a tool for identifying the errors in the javascript according to the p
         }
     },
     "env" : {
-        "browser" : "true"
+        "browser" : true
     },
     "rules" : {
         "no-empty" : "error",
@@ -168,7 +174,8 @@ ESlint is a tool for identifying the errors in the javascript according to the p
 - With that pre-built configurations we don't need our previous set of rules as it's already configured in our `eslint:recommended` built. Find more about rules on
 [rules](https://eslint.org/docs/rules/)
 - `.eslintrc` will now look like :
-```
+``` 
+// update here required
 ```
 - Run our old friend `npm run lint`. It will now display us an error `Unexpected constant condition  no-constant-condition`. It's saying we have a constant condition and it's actually referring to this line in out `test.js`.
 ```js
@@ -192,7 +199,372 @@ let whatIsCool = "javascript is cool"
 console.log(whatIsCool)
 ```
 Run the command again. It should work just fine.
-<!-- - For now, we will check for the errors on our `src` directory. we will use a glob `/**/*.src`. So, our previous validate command will be `npm run lint` -->
+
+### Narrowing down the linting
+We are linting all the files in our project directory that is a `.js` file. What if we are working with `babel` or `webpack`? As we know they compile down the codes from the `node_modules` and linting will actually also check errors in our compiled file.
+So, we need to ignore the `node_modules` as well as the directory where the build is being made. But in `eslint` to my knowledge `node_modules` are ignored by default.
+
+#### Setting up eslintignore
+Create a directory on the root as `build` and also create a file in it with name `test.build.js`. let's consider `test.build.js` is our compiled file. Put this content inside of it `const test = "test";`.
+Run the command `npm run lint`. It will gives us an error `'test' is assigned a value but never used  no-unused-vars` in the compiled file which we don't want as we are sure that we have already linted it (Standard is running lintings before compiling code).
+Inorder to ignore any specific file in our case it's the compiled file we will create a `.eslintignore` in our root directory. **Note** the filename can be anything for example `.ignore`, `.gitignore` etc but look into `.gitignore` what does it mean? We can see it's ignoring files for git so `.eslintignore` is way better than simply `.ignore`.
+
+**.eslint-ignore**
+<img src="images/eslint-ignore.png"/>
+
+Above we ignore the directory build. With that in place, you can run now `npx eslint --ignore-path .eslintignore .`.You will see that the files in the build directory are now ignored i.e eslint wont run checks on it. The `--ignore-path` tells the eslint what are the files that it should ignore.
+We can refactor the command to run with the ignore path like before. 
+
+**package.json**
+<img src="images/eslint-ig-pkg.png" />
+
+### Installing Eslint Extension
+Eslint extension is a great way to work with the static testing. In `vscode` install [eslint extension](https://update.com). 
+After installation you may need to reload `vscode`.
+
+### Eslint Extension
+You can create a new file in src directory and write something like this:
+```js
+const test = "something";
+```
+The vscode now knows that the variable `test` is declared but never used so throws an error visible to your eyes without running `npx eslint`. This is possible because of the eslint extension that you've installed previously.
+<img src="images/eslint-ex.png" />
+
+## Prettier
+You often find yourself making the code pretty like adding indentation equally in every piece of code you write, adding semicolons if that is what you're into and many more. But it's a waste of time and there's no confirmation that all your contributors or even team members follow the same style guides that you work with. So, prettier enforces a style guide as well as helps to make the code prettier in a easy scoop.
+
+### Installing Prettier
+Many of the people start using prettier just by installing extension. It's okay to do it as well but not in a project with others on it. People can have different configuration settings. And with the extension only you're settings are unique to yourself. So, we will install prettier locally to our project and have a configuration file with set of rules for prettier to follow same as eslint.
+`npm install prettier -D`
+
+## Using Prettier
+Prettier comes along with the cli. **NOTE** you've installed the package locally so you've use `npx prettier` but if you had installed it globally with the `g` flag, you could do just `prettier`.
+Now, you can make some code formatting errors. Previously we created a file to test our eslint extension, let's call it `test.js` (`src\test.js`);
+
+**test.js**
+```js
+const test = "nothing"
+```
+
+Change this to 
+```js
+const test
+      = "nothing"
+```
+
+This is clearly an formatting error. You can check it with prettier. Run `npx prettier .`. Well, there may be too many file that prettier tried to execute like `serviceWorker.ts`. You can narrow it down by giving the specific file location. Try it with `npx prettier src/test.js`, it will give you the output
+```js
+const test = "nothing"; 
+```
+Notice our code was not formatted like it & prettier additionally adds the semicolon as well. But if you look at your file it is still the same is used to be prettier didn't really updated it. Either you can copy paste the generated formatted code to the file that prettier just consoled out or you can run prettier to `write` access as well. Try `npx prettier src\test.js --write`. It should now update the `test.js` with prettified code.
+
+**Configuring prettier**
+You may need some other formatting or change the default behaviour of the prettier like the semicolon addition. Some prefer semicolon & some don't. You can change this sort of behaviour with the prettier config file.
+Visit this link [Prettier playground](https://prettier.io/playground/). You can create a config of your own. On the left side of the playground, there's a panel choose the options which you want to have. 
+For example: 
+```
+--parser typescript 
+// parser can be anything since we are using typescript to compile our react app we will use typescript as parser but it's optional as prettier is able to identify it on run time.
+
+--no-semi false
+// I like semicolons. If you don't need semicolons check it.
+```
+You can go through the options you self and check what works for you best. You can now download / copy the config JSON.
+On your root dir create a file `.prettierrc` & paste your copied config JSON.
+
+**.prettierrc**
+```
+{
+  "arrowParens": "always",
+  "bracketSpacing": true,
+  "htmlWhitespaceSensitivity": "css",
+  "insertPragma": false,
+  "jsxBracketSameLine": false,
+  "jsxSingleQuote": false,
+  "printWidth": 80,
+  "proseWrap": "preserve",
+  "quoteProps": "as-needed",
+  "requirePragma": false,
+  "semi": true,
+  "singleQuote": false,
+  "tabWidth": 2,
+  "trailingComma": "es5",
+  "useTabs": false,
+  "vueIndentScriptAndStyle": false
+}
+```
+The file name can be anything but by default prettier checks for config `.prettierrc`. You can also run another config file with `config` flag as `npx prettier --config .my-prettier-config .`;
+Find out more about flags and options in [Prettier CLI](https://prettier.io/docs/en/cli.html).
+
+Make some changes to your previous file to check if you're prettier is working as you wanted. Don't forget to run `npx prettier src\test.js` in the end.
+
+**package.json**
+Now that you've set up the config file, you add a `script` in your package.json to run it more efficiently. **NOTE** you don't want to run prettier in production code as it is minified as well as you only want prettier to run for the files `.js, .jsx, .ts, .tsx` inside of your `src` dir (we need globs);
+```
+"scripts": {
+    "lint": "npx eslint --ignore-path .eslintignore .",
+    "pretty": "npx prettier \"**/*.(js|json|jsx|ts|tsx)\" --write"
+  },
+```
+
+**Understanding the glob**
+`\"**/*.+(js|json|jsx|ts|tsx)\"` : `\"` is escaping the double quotation marks, `**/` is checking in all folders (`src/` would check inside of src dir only), `*.+(js|json|jsx|ts|tsx)` name of the file can be anything and can end with either `js or json or jsx or ts or tsx`.
+So, all together the `script` will look for formatting issues within the project & format it. Make some formatting issues in your `test.js` and `App.tsx` & then run `npm run pretty` it should format all your codes.
+
+**Problems with our current setup**
+Currently, your prettier is running all of your files which we don't want. As I said we don't want prettier to pretify code in our build directory or some other directories which depends. You can handle it with `ignore-path` flag of prettier similar to `.eslintignore` path. 
+**NOTE** both ignore files follow the `gitignore` pattern, you can read more about it at [gitignore patterns](https://git-scm.com/docs/gitignore#_pattern_format).
+You can check that your prettier is running on the build directory as well. If you have followed from previous eslint you should have a file `test.build.js` in your `build` directory. If you don't have it create `build/test.build.js`;
+
+**test.build.js**
+```js
+const test
+    = "test"
+```
+I have a formatting error. You can run now `npm run pretty`.
+```js
+const test = "test";
+```
+Our prettier is running on build directory as well which we want to ignore.
+
+**Ignoring files in prettier**
+Create a file in the root `.prettierignore`.
+```
+  /build
+```
+Update your `scripts` in `package.json`.
+
+**package.json**
+```
+"scripts": {
+  "lint": "npx eslint --ignore-path .eslintignore .",
+  "pretty": "npx prettier --ignore-path .prettierignore \"**/*.(js|json|jsx|ts|tsx)\" --write"
+},
+```
+
+Make some formatting issues in `test.build.js` and run `npm run pretty`. `test.build.js` won't format now. You may notice `.eslintignore` & `.prettierignore` are kind of same in our case it's actually same. But one more thing to notice is they are ignoring what git is ignoring so you can use `.gitignore` as your ignore path.
+**package.json**
+```
+"scripts": {
+  "lint": "npx eslint --ignore-path .gitignore .",
+  "pretty": "npx prettier --ignore-path .gitignore \"**/*.(js|json|jsx|ts|tsx)\" --write"
+},
+```
+Try running the scripts, they should work just like before.
+
+**Prettier Extension**
+You can install prettier extension to make your work lot easier without having to run the script everytime you want to format your code.
+Install `prettier` extension in `vscode`. For other text-editors visit [Prettier integration](https://prettier.io/docs/en/editors.html).
+
+Make `prettier` your default formatter. Go to your `settings.json` and add this json:
+```
+  {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "[javascript]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    }
+  }
+```
+After that you can use it as 
+```
+1. CMD + Shift + P -> Format Document
+OR
+1. Select the text you want to Prettify
+2. CMD + Shift + P -> Format Selection
+```
+You can now go to `test.js` and make some formatting errors and press `CMD + Shift + P` or `Ctrl + Shift + P` & type `format document`.
+Prettier can be used on files on save as well inorder to do that update your `settings.json` as
+```
+  // Set the default
+  "editor.formatOnSave": false,
+  // Enable per-language
+  "[javascript]": {
+      "editor.formatOnSave": true
+  }
+```
+Languages supported by `prettier`: 
+```
+javascript
+javascriptreact
+typescript
+typescriptreact
+json
+graphql
+```
+
+**Problems with eslint & prettier**
+Sometime eslint & prettier rules conflict withother. For example : you have `semicolons` enabled in `eslint` and disabled in `prettier` which will cause issues with `eslint`. So, we can override the `eslint` rules.
+There may be other things as well so we will just use others `config`.
+Install `npm i eslint-config-prettier -D`
+
+**.eslintrc**
+```
+{
+    "parserOptions" : {
+        "ecmaVersion" : 6,
+        "sourceType" : "module",
+        "ecmaFeatures" : {
+            "jsx" : true
+        }
+    },
+    "env" : {
+        "browser" : true
+    },
+    "extends" : ["eslint:recommended", "prettier"],
+    "rules" : {   
+        "no-constant-condition" : "off"    
+    }
+}
+```
+
+## Populars javascript style guide integration (needs work)
+I personally prefer (google) style guides... 
+
+### TYPESCRIPT
+
+## Installation
+Since, I believe you already have installed `typescript` if not then let's just install it.
+```
+npm i typescript -D
+```
+You can now create a file `test.ts`.
+**test.ts**
+```ts
+let a: string = "string";
+export default a;
+``` 
+If you see any eslint errors ignore them for now.
+You can run `npx tsc` to compile the `.ts` files with typescript. Nothing will happen as it compiles successfully. Update the `test.ts` file with following code :
+**test.ts**
+```ts
+let a: string = "string";
+a = 2;
+export default a;
+``` 
+Here, you have declared `a` as a `string` but assigning it a `number` which is a type error so run `npx tsc` then it will throw an error on that line.
+Since, you'll be running it again & again how about creating an alias script on `package.json`. Add this line to your package.json scripts key.
+```
+  "check:types": "tsc",
+  "validate:code": "npm run check:types & npm run pretty"
+```
+If you only want to check types you can do `npm run check:types` or if you want to check types as well as validate code the run `npm run validate:code`.
+**test.ts**
+```ts
+let a: string 
+  = "string";
+a = 2;
+export default a;
+``` 
+Here, you should make a format error & run `npm run validate:code`. **Notice** it fixes the formatting issue. Normally, it prettier doesn't works with the `.ts` or `.tsx` files but it's because of the glob that you
+have added in the glob of `npm run pretty` script.
+
+## Integrating eslint & typescript
+If you go back to `test.ts` you'll have some linting errors.
+<img src="images/ts-lint-error.png"/>
+
+But if you run our previous eslint command `npm run lint` it won't throw you the error. It's because our eslint only supports or looks at `.js` files, so you need to extend it's area of scope. You can do that with eslint flag `--ext`. 
+Update the lint script in your `package.json`.
+
+**package.json**
+```
+"lint": "npx eslint --ext .js,.jsx,.ts,.tsx --ignore-path .gitignore ." 
+```
+With that it will lint now `js, jsx, ts & tsx` extension. You can run `npm run lint` it will now throw the error as `unexpected token :`.
+
+This is because `: string` doesn't mean anything in javascript, so you've to tell eslint that this is a typescript. You can now add typescript plugin to work with files with extension `.ts` & `.tsx`.
+Now, run : `npm install @typescript-eslint/parser @typescript-eslint/eslint-plugin -D`
+Read more : [typescript-eslint](https://github.com/typescript-eslint/typescript-eslint)
+
+You can now update the eslint configuration file.
+**.eslintrc**
+```
+{
+    "parserOptions" : {
+        "ecmaVersion" : 6,
+        "sourceType" : "module",
+        "ecmaFeatures" : {
+            "jsx" : true
+        }
+    },
+    "env" : {
+        "browser" : true
+    },
+    "extends" : ["eslint:recommended", "prettier"],
+    "rules" : {   
+        "no-constant-condition" : "off"    
+    },
+    "overrides": [
+        {
+            "files" : "**/*.+(ts|tsx)",
+            "parser" : "@typescript-eslint/parser",
+            "parserOptions": {
+                "project" : "./tsconfig.json"
+            },
+            "plugins" : ["@typescript-eslint/eslint-plugin"],
+            "extends" : []
+        }
+    ]
+}
+```
+you have know override eslint for files with extensions `ts | tsx`. Go to your `test.ts` file you won't have that linting error now but we have another problem.
+Previously, you have looked at a `typeof error` let's do that again in `test.ts`.
+
+**test.ts**
+```ts
+let a: string = "string";
+typeof a === "stng"
+export default a;
+```
+You'll have two error one with eslint & another being typescript.
+<img src="images/typescript-eslint-multi-error.png">
+
+Since, we want typescript to do most of the stuffs in our `.ts | .tsx` file so you will want to show the error with typescript. For this we will extends some predefined eslint-typescript configs.
+<img src="images/typescript-eslint-config.png">
+
+Now, run `npm run lint`. Ignore all the warning's for now mostly they be of `unused vars` which is not a problem. Currently, at `test.ts` you will see two errors
+You may see two errors again in `let a : string = "string"` but they are different now if you take a look.
+- **'a' is never reassigned. Use 'const' instead.**
+  - This error is from eslint you can fix it by simply doing `const a : string = "string"`.
+- **Type string trivially inferred from a string literal, remove type annotation.**
+  - This error is from typescript and it's saying the string literal infers the type so no need to give it `:string`.
+  - ` const a  = "string`.
+
+**test.ts**
+```ts
+const a = "string";
+typeof a === "string"
+export default a;
+```
+
+## Prettier & typescript
+Sometime, prettier & typescript conflicts with eachother. So, we want typescript to be in sync with our prettier configs. So, we have to add one more plugin.
+(UPDATE REQUIRED HOW THEY CONFLICT)
+
+**.eslintrc**
+```
+"overrides": [
+        {
+            "files" : "**/*.+(ts|tsx)",
+            "parser" : "@typescript-eslint/parser",
+            "parserOptions": {
+                "project" : "./tsconfig.json"
+            },
+            "plugins" : ["@typescript-eslint/eslint-plugin"],
+            "extends" : [
+                "plugin:@typescript-eslint/eslint-recommended",
+                "plugin:@typescript-eslint/recommended",
+                "eslint-config-prettier/@typescript-eslint"
+            ],
+            "rules" : {
+              // Removes the ts interface name prefix rule
+               "@typescript-eslint/interface-name-prefix" : "off"
+            }
+        }
+    ]
+```
+
+
+
 
 
 
