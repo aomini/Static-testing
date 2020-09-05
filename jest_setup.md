@@ -97,4 +97,10 @@ module.exports = {
 "test:debug" : "node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand --watch",
 ```
 
+## Test Coverage
+> You can see your test coverage by appending the option `coverage`. `jest --coverage` which will create a folder and open the `index.html` which contains the coverage report. You can also set the coverage report from particular test directory. We don't want to see the test coverage from test utils so we can update the jest config  to only cover test from `src`.
+```js
+collectCoverageFrom : ['**/src/**.*js']
+```
+
   
