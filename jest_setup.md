@@ -32,7 +32,7 @@ module.exports = {
     },
   ```
   
-  ## Style in css (emotion)
+  ## CSS in js (emotion)
   > Used in snapshot testing for legible errors & output. Rather than having generated className you can helpful emotion classes like `emotion: 0`. We can do this by doing snapshot serializers. 
   - Install `jest-emotion`
   - Update your jest config:
