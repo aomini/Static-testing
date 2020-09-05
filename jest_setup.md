@@ -57,3 +57,25 @@ module.exports = {
   - This can be done by the property `setupFilesAfterEnv`.
   - ```setupFilesAfterEnv: ['@testing-library/jest-dom/extend-expect']```
   
+  ## Global test utilities
+  > You do this by simply giving the path to the folder containing the module nad put it inside of `moduleDirectories`. 
+  ```js
+    moduleDirectories: ['node_modules', path.join(__dirname, 'src'), 'components', 'testUtilsFolder'],
+    ```
+  > This will throw an eslint error so inorder to get over that. Install `eslint-import-resolver-jest` and update your `eslintrc`.
+  ```js
+  overrides: [    
+    {
+      files: ['**/__tests__/**'],
+      settings: {
+        'import/resolver': {
+          jest: {
+            jestConfigFile: path.join(__dirname, './jest.config.js'),
+          },
+        },
+      },
+    },
+  ],
+  ```
+  
+  
