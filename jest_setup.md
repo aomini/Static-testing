@@ -77,5 +77,18 @@ module.exports = {
     },
   ],
   ```
+  > For vs-code. Create a `jsconfig.json` in root dir.
+  ```js
+  {
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "*": ["src/*", "src/shared/*", "test/*"]
+    }
+  },
+  "include": ["src"]
+}
+
+```
   
   
