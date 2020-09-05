@@ -77,7 +77,7 @@ module.exports = {
     },
   ],
   ```
-  > For vs-code. Create a `jsconfig.json` in root dir.
+  > For vs-code. Create a `jsconfig.json` in root dir. This helps vscode to navigate to the module.
   ```js
   {
   "compilerOptions": {
