@@ -90,5 +90,11 @@ module.exports = {
 }
 
 ```
-  
+
+## Debugger
+> Add This command to `package.json` and open it in chrome as `chrome://inspect`.
+```js
+"test:debug" : "node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand --watch",
+```
+
   
