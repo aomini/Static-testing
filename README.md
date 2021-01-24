@@ -216,7 +216,7 @@ Above we ignore the directory build. With that in place, you can run now `npx es
 We can refactor the command to run with the ignore path like before. 
 
 **package.json**
-<img src="https://raw.githubusercontent.com/aomini/master/images/eslint-ig-pkg.pngsanitize=true&raw=true" />
+<img src="https://raw.githubusercontent.com/aomini/Static-testing/master/images/eslint-ig-pkg.PNG?sanitize=true" />
 
 ### Installing Eslint Extension
 Eslint extension is a great way to work with the static testing. In `vscode` install [eslint extension](https://update.com). 
