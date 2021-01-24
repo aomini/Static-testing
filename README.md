@@ -210,7 +210,7 @@ Run the command `npm run lint`. It will gives us an error `'test' is assigned a 
 Inorder to ignore any specific file in our case it's the compiled file we will create a `.eslintignore` in our root directory. **Note** the filename can be anything for example `.ignore`, `.gitignore` etc but look into `.gitignore` what does it mean? We can see it's ignoring files for git so `.eslintignore` is way better than simply `.ignore`.
 
 **.eslint-ignore**
-<img src="https://raw.githubusercontent.com/aomini/Static-testing/master/images/eslint-ignore.png?sanitize=true"/>
+<img src="https://raw.githubusercontent.com/aomini/Static-testing/master/images/eslint-ignore.PNG?sanitize=true"/>
 
 Above we ignore the directory build. With that in place, you can run now `npx eslint --ignore-path .eslintignore .`.You will see that the files in the build directory are now ignored i.e eslint wont run checks on it. The `--ignore-path` tells the eslint what are the files that it should ignore.
 We can refactor the command to run with the ignore path like before. 
@@ -460,7 +460,7 @@ have added in the glob of `npm run pretty` script.
 
 ## Integrating eslint & typescript
 If you go back to `test.ts` you'll have some linting errors.
-<img src="https://raw.githubusercontent.com/aomini/Static-testing/master/images/ts-lint-error.png?sanitize=true"/>
+<img src="https://raw.githubusercontent.com/aomini/Static-testing/master/images/ts-lint-error.PNG?sanitize=true"/>
 
 But if you run our previous eslint command `npm run lint` it won't throw you the error. It's because our eslint only supports or looks at `.js` files, so you need to extend it's area of scope. You can do that with eslint flag `--ext`. 
 Update the lint script in your `package.json`.
@@ -516,10 +516,10 @@ typeof a === "stng"
 export default a;
 ```
 You'll have two error one with eslint & another being typescript.
-<img src="https://raw.githubusercontent.com/aomini/Static-testing/master/images/typescript-eslint-multi-error.png?sanitize=true">
+<img src="https://raw.githubusercontent.com/aomini/Static-testing/master/images/typescript-eslint-multi-error.PNG?sanitize=true">
 
 Since, we want typescript to do most of the stuffs in our `.ts | .tsx` file so you will want to show the error with typescript. For this we will extends some predefined eslint-typescript configs.
-<img src="https://raw.githubusercontent.com/aomini/Static-testing/master/images/typescript-eslint-config.png?sanitize=true">
+<img src="https://raw.githubusercontent.com/aomini/Static-testing/master/images/typescript-eslint-config.PNG?sanitize=true">
 
 Now, run `npm run lint`. Ignore all the warning's for now mostly they be of `unused vars` which is not a problem. Currently, at `test.ts` you will see two errors
 You may see two errors again in `let a : string = "string"` but they are different now if you take a look.
